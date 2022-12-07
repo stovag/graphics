@@ -1,0 +1,74 @@
+<html>
+  <head>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-environment-component/dist/aframe-environment-component.min.js"></script>
+    <script>
+        AFRAME.registerComponent('squeezer', {
+          init: function() {
+            var pieces = document.getElementsByClassName('juice')
+            this.el.addEventListener('mouseenter', e => {
+              for (let piece of pieces) {
+                piece.emit('squeeze')
+              }
+            })
+            this.el.addEventListener('mouseleave', e => {
+              for (let piece of pieces) {
+                piece.emit('unsqueeze')
+              }
+            })
+          }
+        })
+    </script>
+    </head>
+    <body>
+    <a-scene>
+        <a-assets>
+            <audio id="ambiance" src="subwoofer_lullaby.mp3" preload="auto" volume=1 loop="true"></audio>
+            <audio id="slush" src="pour_juice.wav" preload="auto" volume=1></audio>
+            <img id="my-texture" src="glass_texture.jpeg" preload="auto">
+        </a-assets>
+        <a-entity sound="src: #ambiance" autoplay="true"></a-entity>
+        <a-camera>
+            <a-cursor color="#FAFAFA"></a-cursor>
+        </a-camera>    
+        <a-entity environment="preset: forest; dressingAmount: 10; shadow: true"></a-entity>
+        <a-dodecahedron 
+            squeezer
+            class="juice"
+            color="purple" 
+            position="-3 7.5 -10" 
+            scale="2 2 2"
+            animation__float="property: object3D.position.y; to: 6.5; dir: alternate; dur: 2000; loop: true"
+            animation__squeeze="property: scale; to: 1 1 1; dur: 1000; dir: alternate; startEvents: squeeze"
+            animation__unsqueeze="property: scale; to: 2 2 2; dur: 1000; dir: alternate; startEvents: unsqueeze"
+            sound="src: #slush; on: mouseenter"
+            ></a-dodecahedron>
+        <a-tetrahedron 
+            class="juice"
+            color="green" 
+            position="-2 9.5 -10" 
+            scale="2 2 2"
+            animation__float="property: object3D.position.y; to: 8.5; dir: alternate; dur: 2000; loop: true"
+            animation__squeeze_tip="property: object3D.rotation.x; to: 180; startEvents: squeeze"
+            animation__squeeze_shrink="property: scale; to: 1 1 1; dir: alternate; startEvents: squeeze"
+            animation__squeeze_follow_x="property: object3D.position.x; to: -2.5 dir: alternate; startEvents: squeeze"
+            animation__squeeze_follow_z="property: object3D.position.z; to: -11 dir: alternate; startEvents: squeeze"
+            animation__unsqueeze_tip="property: object3D.rotation.x; to: 0; startEvents: unsqueeze"
+            animation__unsqueeze_shrink="property: scale; to: 2 2 2; dir: alternate; startEvents: unsqueeze"
+            animation__unsqueeze_follow_x="property: object3D.position.x; to: -1.7 dir: alternate; startEvents: unsqueeze"
+            animation__unsqueeze_follow_z="property: object3D.position.z; to: -10 dir: alternate; startEvents: unsqueeze"
+            ></a-tetrahedron>
+        <a-cylinder 
+            class="juice"
+            position="-3 2 -10" 
+            scale="2 5.5 2"
+            material="opacity: 0.7; transparent:true; color:white"
+            animation__idle="property: object3D.rotation.y; to: 180; dur: 10000; loop:true"
+            animation__squeeze="property: components.material.material.color; type: color; to: purple; delay:900; startEvents: squeeze; dur: 500"
+            animation__squeeze_transparent="property: components.material.material.opacity; type: opacity; to: 0.9; delay:900; startEvents: squeeze; dur: 500"
+            animation__unsqueeze="property: components.material.material.color; type: color; to: white; delay:900; startEvents: unsqueeze; dur: 500"
+            animation__unsqueeze_transparent="property: components.material.material.opacity; type: opacity; to: 0.7; delay:900; startEvents: unsqueeze; dur: 500"
+            ></a-cylinder>
+        </a-scene>
+  </body>
+</html>
